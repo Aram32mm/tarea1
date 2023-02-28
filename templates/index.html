@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+      {%load static%}
+      <link href="{% static 'estilo.css'%}" rel = "stylesheet"/>
+      <title> Log In </title>
+  </head>
+  <body>
+      <h1> Calculadora de Fracciones </h1>
+      <br/>
+      <p>Dame tu nombre</p>
+      <form action="procesamiento" method="POST">
+          {% csrf_token%}
+          <input type="text" name="nombre"/>
+          <input type="submit"/>
+      </form>
+  </body>
+
+</html>
+
