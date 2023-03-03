@@ -1,10 +1,10 @@
 # 3.1 Tarea Creación de calculadora de fracciones
 
-##hola
+## URL del servicio en la nube pública
+http://13.90.46.81:8000
 
 
-
-# Especificaciones
+## Especificaciones
 Crear un proyecto usando el software de Django que permita la ejecución de las operaciones de suma, resta, multiplicación y división de fracciones a través de un API tipo REST. 
 
 1. Operación suma
