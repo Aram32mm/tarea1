@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from json import loads, dumps 
 from fractions import Fraction
+from .models import Reto
 
 # Create your views here 
 def nueva():
