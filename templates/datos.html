@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+      {% load static %}
+      <link href="{% static 'estilo.css'%}" rel = "stylesheet"/>
+      <title> Jugadores </title>
+  </head>
+  <body>
+      <h1> Lista de jugadores del juego </h1>
+      <ul>
+        {% for j in lista_jugadores%}
+        <li> {{j.nombre}} : {{j.minutos_jugados}} </li>
+        {% endfor %}
+      </ul>
+      
+  </body>
+
+</html>
