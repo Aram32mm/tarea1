@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+      {% load static %}
+      <link href="{% static 'estilo.css'%}" rel = "stylesheet"/>
+      <title> Usuarios </title>
+  </head>
+  <body>
+    <table>
+        <caption>Usuarios</caption>
+        <thead>
+          <tr>
+            <th scope = "col">ID</th>
+            <th scope = "col">Grupo</th>
+            <th scope = "col">Grado</th>
+            <th scope = "col">Número de Lista</th>
+          </tr>
+        </thead>
+        
+        <tbody>
+            {% for elementos in lista_usuarios%}
+            <tr>
+                {% for elemento in elementos%}
+                <th scope = "row">{{elemento}}</th>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+      
+      </table>
+      
+  </body>
+
+</html>
+

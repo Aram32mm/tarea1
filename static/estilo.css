@@ -4,3 +4,12 @@ h1 {
     background-color: orange;
     border: 5px solid black;
 }
+
+caption {
+    font-weight: bold;
+}
+table, caption {
+    background-color:lavender;
+    color:lightseagreen;
+   
+}

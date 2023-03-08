@@ -1,4 +1,5 @@
 from ast import Num
+from nntplib import GroupInfo
 from termios import FF1
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -6,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from json import loads, dumps 
 from fractions import Fraction
 from .models import Reto
+import sqlite3
 
 # Create your views here 
 def nueva():
@@ -69,3 +71,72 @@ def division(request):
     #json_resultado = resultado.toJSON()
     json_resultado = dumps({"num":int(resultado.numerator), "den":int(resultado.denominator)}, sort_keys=False, indent=4)
     return HttpResponse(json_resultado,content_type = "text/json-comment-filtered")
+
+def usuarios(request):
+    if request.method == 'GET':
+        con = sqlite3.connect("db.sqlite3")
+        cur = con.cursor()
+        res = cur.execute("SELECT * FROM usuarios")
+        resultado = res.fetchall()
+        '''
+        for registro in resultado:
+            id, grupo, grado, num_lista = registro
+        '''
+        #return HttpResponse(resultado)
+        return render(request,'datosDB.html',{'lista_usuarios':resultado})
+    elif request.method == 'POST':
+        body = request.body.decode('UTF-8')
+        eljson = loads(body)
+        grupo = eljson['grupo']
+        grado = eljson['grado']
+        num_lista = eljson['num_lista']
+        con = sqlite3.connect("db.sqlite3")
+        cur = con.cursor()
+        res = cur.execute("INSERT INTO usuarios (grupo, grado, num_lista) VALUES(?,?,?)",(grupo, grado, num_lista))
+        con.commit()
+        return HttpResponse('OK. Usuario agregado!')
+    elif request.method == 'DELETE':
+        return(usuario_del(request))
+
+
+
+    
+
+@csrf_exempt
+def usuario_pos(request):
+    body = request.body.decode('UTF-8')
+    eljson = loads(body)
+    grupo = eljson['grupo']
+    grado = eljson['grado']
+    num_lista = eljson['num_lista']
+    con = sqlite3.connect("db.sqlite3")
+    cur = con.cursor()
+    res = cur.execute("INSERT INTO usuarios (grupo, grado, num_lista) VALUES(?,?,?)",(grupo, grado, num_lista))
+    con.commit()
+    return HttpResponse('OK. Usuario agregado!')
+
+@csrf_exempt
+def usuario_del(request):
+    body = request.body.decode('UTF-8')
+    eljson = loads(body)
+    id = eljson['id']
+    con = sqlite3.connect("db.sqlite3")
+    cur = con.cursor()
+    #res = cur.execute(f'DELETE FROM usuarios WHERE id_usuario = ?',(str(id)))
+    res = cur.execute(f'DELETE FROM usuarios WHERE id_usuario = {id}')
+    con.commit()
+    return HttpResponse('OK. Usuario borrado.')
+
+@csrf_exempt
+def usuario_updt(request):
+    body = request.body.decode('UTF-8')
+    eljson = loads(body)
+    id = eljson['id']
+    grupo = eljson['grupo']
+    grado = eljson['grado']
+    num_lista = eljson['num_lista']
+    con = sqlite3.connect("db.sqlite3")
+    cur = con.cursor()
+    res = cur.execute(f'UPDATE usuarios SET grupo = ?, grado = ?, num_lista = ? WHERE id_usuario = ?',(grupo, grado, num_lista, id))
+    con.commit()
+    return HttpResponse('OK. Cambio de usuario exitoso.')
