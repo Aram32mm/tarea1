@@ -2,12 +2,16 @@ from ast import Num
 from nntplib import GroupInfo
 from termios import FF1
 from django.shortcuts import render
+from rest_framework import generics, viewsets
+from . serializers import RetoSerializer, JugadorSerializer, UsuarioSerializer, PartidaSerializer
+from . models import Reto, Jugadores, Usuario, Partida
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from json import loads, dumps 
 from fractions import Fraction
 from .models import Reto
 import sqlite3
+import requests
 
 # Create your views here 
 def nueva():
@@ -99,9 +103,6 @@ def usuarios(request):
         return(usuario_del(request))
 
 
-
-    
-
 @csrf_exempt
 def usuario_pos(request):
     body = request.body.decode('UTF-8')
@@ -140,3 +141,61 @@ def usuario_updt(request):
     res = cur.execute(f'UPDATE usuarios SET grupo = ?, grado = ?, num_lista = ? WHERE id_usuario = ?',(grupo, grado, num_lista, id))
     con.commit()
     return HttpResponse('OK. Cambio de usuario exitoso.')
+
+#servicio endpoint de validación de usuarios
+#entrada: { "id_usuario" :"usuario","pass" : "contrasenia"}
+#salida: {"estatus":True}
+@csrf_exempt
+def valida_usuario(request):
+    body = request.body.decode('UTF-8')
+    eljson = loads(body)
+    usuario  = eljson['id_usuario']
+    contrasenia = eljson['pass']
+    print(usuario+contrasenia)
+    #con = sqlite3.connect("db.sqlite3")
+    #cur = con.cursor()
+    #res = cur.execute("SELECT * FROM usuarios WHERE id_usuario=? AND password=?",(str(usuario),str(contrasenia)))
+    #si el usuario es correcto regresar respuesta exitosa 200 OK
+    #en caso contrario, regresar estatus false
+    return HttpResponse('{"estatus":true}')
+
+#Ruta para carga de la página web con el formulario de login
+@csrf_exempt
+def login(request):
+    return render(request, 'login.html')
+
+#Ruta para el proceso del login (invocación del servicio de verificación de usuario)
+@csrf_exempt
+def procesologin(request):
+    usuario = request.POST['usuario']
+    contrasenia = request.POST['password']
+    #invoca el servicio de validación de usuario
+    url = "http://127.0.0.1:8000/valida_usuario"
+    header = {
+    "Content-Type":"application/json"
+    }
+    payload = {   
+    "id_usuario" :usuario,
+    "pass" : contrasenia
+    }
+    result = requests.post(url,  data= dumps(payload), headers=header)
+    if result.status_code == 200:
+        return HttpResponse('Abrir página principal')
+    return HttpResponse('Abrir página de credenciales inválidas')
+
+class RetoViewSet(viewsets.ModelViewSet):
+    queryset = Reto.objects.all()
+    serializer_class = RetoSerializer
+    #ModelViewSet permite crear los manejadores para GET, POST, PUT, DELETE de manera automática
+
+class JugadoresViewSet(viewsets.ModelViewSet):
+    queryset = Jugadores.objects.all() # select * from Calculadora.jugadores
+    serializer_class = JugadorSerializer
+
+class UsuarioViewSet(viewsets.ModelViewSet):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+
+class PartidaViewSet(viewsets.ModelViewSet):
+    queryset = Partida.objects.all()
+    serializer_class = PartidaSerializer
