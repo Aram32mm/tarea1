@@ -2,7 +2,7 @@ from ast import Num
 from nntplib import GroupInfo
 from termios import FF1
 from django.shortcuts import render
-from rest_framework import generics, viewsets
+from rest_framework import viewsets
 from . serializers import RetoSerializer, JugadorSerializer, UsuarioSerializer, PartidaSerializer
 from . models import Reto, Jugadores, Usuario, Partida
 from django.http import HttpResponse
