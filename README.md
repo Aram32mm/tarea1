@@ -1,48 +1,11 @@
-# 3.1 Tarea Creación de calculadora de fracciones
+# 1.4 Servicios REST de entidades
 
 ## URL del servicio en la nube pública
 http://13.90.46.81:8000
 
 
 ## Especificaciones
-Crear un proyecto usando el software de Django que permita la ejecución de las operaciones de suma, resta, multiplicación y división de fracciones a través de un API tipo REST. 
+Crear servicios REST para las entidades usuarios y puntajes de acuerdo a la siguiente especificación:
 
-1. Operación suma
+<img width="752" alt="tarea2" src="https://user-images.githubusercontent.com/104022682/228953821-9f1edf01-c449-43ec-80fe-cfe12463737e.png">
 
-URL: /suma
-
-Método POST
-
-Entrada: {"numerador1":1,"denominador1":2,"numerador2":1,"denominador2":2}
-
-Salida:{"num": 2,"den": 2}
-
-2. Operación resta
-
-URL: /resta
-
-Método POST
-
-Entrada: {"numerador1":3,"denominador1":2,"numerador2":1,"denominador2":2}
-
-Salida:{"num": 2,"den": 2}
-
-3. Operación multiplicación
-
-URL: /multiplicacion
-
-Método POST
-
-Entrada: {"numerador1":1,"denominador1":2,"numerador2":1,"denominador2":2}
-
-Salida:{"num": 1,"den": 4}
-
-4. Operación división
-
-URL: /division
-
-Método POST
-
-Entrada: {"numerador1":1,"denominador1":2,"numerador2":1,"denominador2":2}
-
-Salida:{"num": 2,"den": 2}
