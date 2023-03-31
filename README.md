@@ -1,7 +1,7 @@
 # 1.4 Servicios REST de entidades
 
 ## URL del servicio en la nube pública
-http://13.90.46.81:8000/api
+http://13.90.46.81:8000/api/
 
 
 ## Especificaciones
