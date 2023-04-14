@@ -3,8 +3,8 @@ from nntplib import GroupInfo
 from termios import FF1
 from django.shortcuts import render
 from rest_framework import viewsets
-from . serializers import RetoSerializer, JugadorSerializer, UsuarioSerializer, PartidaSerializer
-from . models import Reto, Jugadores, Usuario, Partida
+from . serializers import RetoSerializer, JugadorSerializer, UsuarioSerializer, PartidaSerializer, EstudianteSerializer, JuegoSerializer, IntentosSerializer
+from . models import Reto, Jugadores, Usuario, Partida, Estudiante, Juego, Intentos
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from json import loads, dumps 
@@ -12,6 +12,7 @@ from fractions import Fraction
 from .models import Reto
 import sqlite3
 import requests
+from random import randrange
 
 # Create your views here 
 def nueva():
@@ -199,3 +200,109 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 class PartidaViewSet(viewsets.ModelViewSet):
     queryset = Partida.objects.all()
     serializer_class = PartidaSerializer
+
+# Reto 
+class EstudianteViewSet(viewsets.ModelViewSet):
+    queryset = Estudiante.objects.all()
+    serializer_class = EstudianteSerializer
+
+class JuegoViewSet(viewsets.ModelViewSet):
+    queryset = Juego.objects.all()
+    serializer_class = JuegoSerializer
+
+class IntentosViewSet(viewsets.ModelViewSet):
+    queryset = Intentos.objects.all()
+    serializer_class = IntentosSerializer
+
+
+
+def grafica(request):
+    #h_var : The title for horizontal axis
+    h_var = 'X'
+
+    #v_var : The title for horizontal axis
+    v_var = 'Y'
+
+    #data : A list of list which will ultimated be used 
+    # to populate the Google chart.
+    data = [[h_var,v_var]]
+    """
+    An example of how the data object looks like in the end: 
+        [
+          ['Age', 'Weight'],
+          [ 8,      12],
+          [ 4,      5.5],
+          [ 11,     14],
+          [ 4,      5],
+          [ 3,      3.5],
+          [ 6.5,    7]
+        ]
+    The first list will consists of the title of horizontal and vertical axis,
+    and the subsequent list will contain coordinates of the points to be plotted on
+    the google chart
+    """
+
+    #The below for loop is responsible for appending list of two random values  
+    # to data object
+    for i in range(0,11):
+        data.append([randrange(101),randrange(101)])
+
+    #h_var_JSON : JSON string corresponding to  h_var
+    #json.dumps converts Python objects to JSON strings
+    h_var_JSON = dumps(h_var)
+
+    #v_var_JSON : JSON string corresponding to  v_var
+    v_var_JSON = dumps(v_var)
+
+    #modified_data : JSON string corresponding to  data
+    modified_data = dumps(data)
+
+    #Finally all JSON strings are supplied to the charts.html using the 
+    # dictiory shown below so that they can be displayed on the home screen
+    return render(request,"charts.html",{'values':modified_data,\
+        'h_title':h_var_JSON,'v_title':v_var_JSON})
+
+def barras(request):
+    '''
+    data = [
+          ['Jugador', 'Minutos Jugados'],
+          ['Ian', 1000],
+          ['Héctor', 1170],
+          ['Alan', 660],
+          ['Manuel', 1030]
+        ]
+    '''
+    data = []
+    data.append(['Jugador', 'Minutos Jugados'])
+    resultados = Reto.objects.all() #select * from reto;
+    titulo = 'Videojuego Odyssey'
+    titulo_formato = dumps(titulo)
+    subtitulo= 'Total de minutos por jugador'
+    subtitulo_formato = dumps(subtitulo)
+    if len(resultados)>0:
+        for registro in resultados:
+            nombre = registro.nombre
+            minutos = registro.minutos_jugados
+            data.append([nombre,minutos])
+        data_formato = dumps(data) #formatear los datos en string para JSON
+        elJSON = {'losDatos':data_formato,'titulo':titulo_formato,'subtitulo':subtitulo_formato}
+        return render(request,'barras.html',elJSON)
+    else:
+        return HttpResponse("<h1> No hay registros a mostrar</h1>")
+
+
+def gauge_chart(request):
+    # Obtener todos los estudiantes con su respectivo progreso
+    estudiantes = Estudiante.objects.all()
+
+    # Crear una lista para almacenar los datos de cada estudiante
+    datos_estudiantes = []
+    for estudiante in estudiantes:
+        nivel_avance = estudiante.avanceJuegoID.juegoID
+        datos_estudiante = [estudiante.numeroLista, estudiante.grupo, nivel_avance]
+        datos_estudiantes.append(datos_estudiante)
+
+    # Renderizar la vista con los datos de todos los estudiantes
+    context = {'datos_estudiantes': datos_estudiantes, 'nivel_maximo':15}
+    return render(request, 'gauge_chart.html', context)
+

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gráficos de Gauge</title>
+    <style>
+      
+      body {
+        background-image: url('static/img/background2.jpg'); /* Ruta relativa a la imagen */
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+      }
+     
+      /* Estilo para el título de la página */
+      h1 {
+        font-family: "Galactic", sans-serif;
+        color: white;
+        text-align: center;
+        font-size: 40px;
+        padding: 0.1%;
+        font-weight: bold;
+        margin-top: 30px;
+      }
+
+      .window {
+        border:100px solid transparent ;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        align-content: space-around;
+        margin: 0 auto;
+
+      }
+
+      /* Estilo para el contenedor principal */
+      .container {
+        border: 20px solid transparent;
+        background: #0A1A3A;
+        mix-blend-mode: hard-light;
+        box-shadow: -15px 15px 4px rgba(0, 0, 0, 0.69);
+        border-radius: 45px;
+        color: white;
+        font-family: "Galactic", sans-serif;
+        font-size: 12px;
+        font-weight: bold;
+        max-width: max-content ;
+        align-content: space-between; 
+
+      }
+
+    </style>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['gauge']});
+        google.charts.setOnLoadCallback(drawCharts);
+
+        function drawCharts() {
+            {% for datos_estudiante in datos_estudiantes %}
+                var data{{ forloop.counter }} = google.visualization.arrayToDataTable([
+                    ['Label', 'Value'],
+                    ['Progreso', {{ datos_estudiante.2 }}]
+                ]);
+
+                var options{{ forloop.counter }} = {
+                    width: 400, height: 120,
+                    redFrom: 0, redTo: 5,
+                    yellowFrom: 5, yellowTo: 10,
+                    greenFrom: 10, greenTo: {{ nivel_maximo }},
+                    minorTicks: 5,
+                    min: 0,  // Valor mínimo en la escala del Gauge
+                    max: {{ nivel_maximo }}  // Valor máximo en la escala del Gauge
+                };
+
+                var chart{{ forloop.counter }} = new google.visualization.Gauge(document.getElementById('chart_div_{{ forloop.counter }}'));
+
+                chart{{ forloop.counter }}.draw(data{{ forloop.counter }}, options{{ forloop.counter }});
+            {% endfor %}
+        }
+    </script>
+</head>
+<body>
+  <h1> Progresos de Usuarios </h1>
+  
+  <div class = window>
+    {% for datos_estudiante in datos_estudiantes %}
+    <div class="container">  
+      <div class="chart-container" id="chart_div_{{ forloop.counter }}"></div>
+      <p>Número de Lista: {{ datos_estudiante.0 }} </br>
+        Grupo: {{ datos_estudiante.1 }} </br>
+        Niveles Completados: {{ datos_estudiante.2 }} </br>
+      </p>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>
+
+

@@ -7,6 +7,10 @@ router.register(r'reto', views.RetoViewSet)
 router.register(r'jugador', views.JugadoresViewSet)
 router.register(r'usuarios', views.UsuarioViewSet, basename='usuario')
 router.register(r'partidas', views.PartidaViewSet, basename='partida')
+#Reto
+router.register(r'estudiantes', views.EstudianteViewSet)
+router.register(r'juegos', views.JuegoViewSet)
+router.register(r'intentos', views.IntentosViewSet)
 
 urlpatterns = [
     path('api/',include(router.urls)),
@@ -25,4 +29,7 @@ urlpatterns = [
     path('login', views.login, name='login'),
     path('procesologin', views.procesologin, name='procesologin'),
     path('valida_usuario',views.valida_usuario,name='valida_usuario'),
+    path('grafica',views.grafica,name='grafica'),
+    path('barras',views.barras,name='barras'),
+    path('gauge',views.gauge_chart,name='gauge'),
 ]
