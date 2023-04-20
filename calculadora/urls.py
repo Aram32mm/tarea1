@@ -32,4 +32,5 @@ urlpatterns = [
     path('grafica',views.grafica,name='grafica'),
     path('barras',views.barras,name='barras'),
     path('gauge',views.gauge_chart,name='gauge'),
+    path('datos_estudiantes',views.datos_estudiantes,name='datos_estudiantes'),
 ]

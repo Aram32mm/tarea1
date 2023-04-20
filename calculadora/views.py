@@ -13,6 +13,8 @@ from .models import Reto
 import sqlite3
 import requests
 from random import randrange
+from django.http import JsonResponse
+
 
 # Create your views here 
 def nueva():
@@ -305,4 +307,22 @@ def gauge_chart(request):
     # Renderizar la vista con los datos de todos los estudiantes
     context = {'datos_estudiantes': datos_estudiantes, 'nivel_maximo':15}
     return render(request, 'gauge_chart.html', context)
+
+
+def datos_estudiantes(request):
+    # Obtener todos los estudiantes con su respectivo progreso
+    estudiantes = Estudiante.objects.all()
+
+    # Crear una lista para almacenar los datos de cada estudiante
+    datos_estudiantes = []
+    for estudiante in estudiantes:
+        nivel_avance = estudiante.avanceJuegoID.juegoID
+        datos_estudiante = {'numeroLista': estudiante.numeroLista, 'grupo': estudiante.grupo, 'nivel_avance': nivel_avance}
+        datos_estudiantes.append(datos_estudiante)
+
+    # Crear el diccionario que se convertirá en JSON
+    data = {'datos_estudiantes': datos_estudiantes, 'nivel_maximo': 15}
+
+    # Crear y devolver el JSON response
+    return JsonResponse(data)
 
